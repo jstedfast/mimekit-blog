@@ -1,0 +1,89 @@
+---
+import { AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import '../styles/site.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  article?: boolean;
+  published?: Date;
+  updated?: Date;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = SITE_DESCRIPTION,
+  article = false,
+  published,
+  updated,
+  noindex = false,
+} = Astro.props;
+const pageTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const image = new URL('/favicon.png', Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#2c3e50" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={AUTHOR} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE_TITLE} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    {updated && <meta property="article:modified_time" content={updated.toISOString()} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@jstedfast" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/" aria-label="MimeKit Blog home">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m3 5 9 8 9-8" />
+          </svg>
+          MimeKit <span class="brand-section">Blog</span>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>Articles</a>
+          <a href="https://mimekit.net/">MimeKit &amp; MailKit</a>
+          <a href="https://mimekit.net/docs/">Documentation</a>
+          <a href="/rss.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; {new Date().getUTCFullYear()} {AUTHOR}</p>
+        <nav aria-label="Footer">
+          <a href="https://github.com/jstedfast/MimeKit">MimeKit</a>
+          <a href="https://github.com/jstedfast/MailKit">MailKit</a>
+          <a href="https://github.com/sponsors/jstedfast">Sponsor</a>
+          <a href="/rss.xml">Subscribe via RSS</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

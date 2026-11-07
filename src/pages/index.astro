@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, getPosts, postUrl } from '../lib/posts';
+
+const posts = await getPosts();
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">The MimeKit &amp; MailKit blog</p>
+      <h1>Under the hood of<br />email for .NET.</h1>
+      <p class="tagline">
+        Notes on building, understanding, and working with email.
+        MIME, mail protocols, and the details that make a difference.
+      </p>
+      <a class="btn" href="/rss.xml">Subscribe via RSS <span aria-hidden="true">&rarr;</span></a>
+    </div>
+  </section>
+  <section class="section container" aria-labelledby="articles">
+    <div class="section-header">
+      <h2 id="articles">Latest articles</h2>
+      <p>From Jeffrey Stedfast, the developer of MimeKit and MailKit.</p>
+    </div>
+    <div class="post-list">
+      {posts.map((post) => (
+        <article class="post-card">
+          <div class="post-meta">
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            {post.data.draft && <span class="draft-badge">Draft preview</span>}
+          </div>
+          <h3><a href={postUrl(post.id)}>{post.data.title}</a></h3>
+          <p>{post.data.description}</p>
+          {post.data.tags.length > 0 && (
+            <ul class="tags" aria-label="Topics">
+              {post.data.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+          )}
+        </article>
+      ))}
+      {posts.length === 0 && <p>Articles are on their way. Subscribe via RSS to follow along.</p>}
+    </div>
+  </section>
+</BaseLayout>
