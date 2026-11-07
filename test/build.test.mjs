@@ -5,6 +5,11 @@ import test from 'node:test';
 const dist = new URL('../dist/', import.meta.url);
 const read = (path) => readFile(new URL(path, dist), 'utf8');
 
+test('home page heading allows natural wrapping without a forced line break', async () => {
+  const home = await read('index.html');
+  assert.match(home, /<h1>[^<]+<\/h1>/);
+});
+
 test('published articles have canonical URLs and appear in the index, RSS, and sitemap', async () => {
   const [home, article, rss, sitemap] = await Promise.all([
     read('index.html'),
@@ -16,6 +21,8 @@ test('published articles have canonical URLs and appear in the index, RSS, and s
   assert.match(article, /rel="canonical" href="https:\/\/blog\.mimekit\.net\/posts\/welcome\/"/);
   assert.match(article, /property="og:type" content="article"/);
   assert.match(article, /November 6, 2026/);
+  assert.match(article, /<img class="author-avatar" src="\/author\.jpg" alt="" width="80" height="80"/);
+  assert.doesNotMatch(article, /class="table-of-contents"|has-contents/);
   assert.match(rss, /<link>https:\/\/blog\.mimekit\.net\/posts\/welcome\/<\/link>/);
   assert.match(sitemap, /<loc>https:\/\/blog\.mimekit\.net\/posts\/welcome\/<\/loc>/);
 });

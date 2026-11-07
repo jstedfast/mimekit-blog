@@ -26,14 +26,17 @@ const contents = headings.filter(({ depth }) => depth === 2);
   updated={post.data.updatedDate}
   noindex={post.data.draft}
 >
-  <article class="article container">
+  <article class:list={['article', 'container', { 'has-contents': contents.length > 1 }]}>
     <header class="article-header">
       <a class="back-link" href="/">&larr; All articles</a>
       {post.data.draft && <p class="draft-notice">Draft preview. This article is excluded from production builds.</p>}
       <h1>{post.data.title}</h1>
       <p class="article-description">{post.data.description}</p>
       <div class="post-meta">
-        <span>{AUTHOR}</span>
+        <span class="post-author">
+          <img class="author-avatar" src="/author.jpg" alt="" width="80" height="80" />
+          <span>{AUTHOR}</span>
+        </span>
         <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
         {post.data.updatedDate && (
           <span>Updated <time datetime={post.data.updatedDate.toISOString()}>{formatDate(post.data.updatedDate)}</time></span>
@@ -45,18 +48,30 @@ const contents = headings.filter(({ depth }) => depth === 2);
         </ul>
       )}
     </header>
-    {contents.length > 1 && (
-      <nav class="table-of-contents" aria-label="On this page">
-        <h2>On this page</h2>
-        <ul>
-          {contents.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}
-        </ul>
-      </nav>
-    )}
-    <div class="prose"><Content /></div>
+    <div class="article-body">
+      {contents.length > 1 && (
+        <aside class="table-of-contents">
+          <details open>
+            <summary>On this page</summary>
+            <nav aria-label="On this page">
+              <ul>
+                {contents.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}
+              </ul>
+            </nav>
+          </details>
+        </aside>
+      )}
+      <div class="prose"><Content /></div>
+    </div>
     <footer class="article-footer">
       <a href="/">&larr; All articles</a>
       <a href="/rss.xml">Subscribe via RSS &rarr;</a>
     </footer>
   </article>
 </BaseLayout>
+
+<script>
+  import { addCodeCopyButtons } from '../../scripts/copy-code';
+
+  addCodeCopyButtons();
+</script>

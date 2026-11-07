@@ -2,7 +2,8 @@
 
 An Astro static blog for **https://blog.mimekit.net**, styled to match the new
 MimeKit website: slate-blue hero, blue accents, system fonts, and automatic
-light/dark mode. No database or client-side JavaScript is required.
+light/dark mode. No database is required; a small client-side script adds
+copy buttons to code blocks.
 
 ## Local development
 
