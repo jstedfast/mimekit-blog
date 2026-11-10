@@ -109,7 +109,7 @@ instruction sets. Base64 encoding has been optimized as well.
 ### Selected parser benchmarks
 
 These **BenchmarkDotNet** measurements from November 6, 2026 compare the
-published MimeKit 4.18.1 package with **5.0 prerelease**, with compliance
+published MimeKit **4.18.1** package with **5.0**, with compliance
 reporting off and on. Throughput is in **MiB/s; higher is better**.
 
 | Workload | 4.18.1 | 5.0, compliance off | 5.0, compliance on |
